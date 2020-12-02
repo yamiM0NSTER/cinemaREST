@@ -1,0 +1,29 @@
+{
+  "name": "kinorest",
+  "version": "1.0.0",
+  "description": "rest API dla kina",
+  "main": "app.ts",
+  "scripts": {
+    "start": "tsc && node ./dist/app.js",
+    "debug": "SET DEBUG=* && npm run start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "init": "tsc --init"
+  },
+  "author": "Joachim Jędrzejczyk",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "debug": "^4.3.1",
+    "express": "^4.17.1",
+    "express-winston": "^4.0.5",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.8",
+    "@types/debug": "^4.1.5",
+    "@types/express": "^4.17.9",
+    "source-map-support": "^0.5.19",
+    "tslint": "^6.1.3",
+    "typescript": "^4.1.2"
+  }
+}
