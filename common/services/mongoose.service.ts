@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-//const mongoose = require('mongoose');
+import debug from 'debug';
+const debugLog: debug.IDebugger = debug('mongoose.service');
 let count = 0;
 
 const options = {
@@ -12,14 +13,15 @@ const options = {
     useUnifiedTopology: true
 };
 
-const connectWithRetry = () => {
-    console.log('MongoDB connection with retry')
-    mongoose.connect("mongodb://localhost:27017/rest-tutorial", options).then(()=>{
-        console.log('MongoDB is connected')
-    }).catch(err=>{
-        console.log('MongoDB connection unsuccessful, retry after 5 seconds. ', ++count);
-        setTimeout(connectWithRetry, 5000)
-    })
+export function connectWithRetry() {
+    debugLog('MongoDB connection with retry')
+    mongoose.connect("mongodb://localhost:27017/kinoREST", options)
+        .then(() => {
+            debugLog('MongoDB is connected')
+        }).catch(err => {
+            debugLog('MongoDB connection unsuccessful, retry after 5 seconds. ', ++count);
+            setTimeout(connectWithRetry, 5000)
+        })
 };
 
 connectWithRetry();

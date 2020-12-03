@@ -1,5 +1,7 @@
 import {CommonRoutesConfig} from '../common/routes.config';
 import express from 'express';
+import * as UsersController from './controllers/users.controller';
+// const UsersController = require('./controllers/users.controller');
 
 export class UsersRoutes extends CommonRoutesConfig {
 
@@ -12,9 +14,12 @@ export class UsersRoutes extends CommonRoutesConfig {
             .get((req: express.Request, res: express.Response) => {
                 res.status(200).send(`List of users`);
             })
-            .post((req: express.Request, res: express.Response) => {
-                res.status(200).send(`Post to users`);
-            });
+            // .post((req: express.Request, res: express.Response) => {
+            //     res.status(200).send(`Post to users`);
+            // })
+            .post([
+                UsersController.insert
+            ]);
     
         this.app.route(`/users/:userId`)
             .all((req: express.Request, res: express.Response, next: express.NextFunction) => {

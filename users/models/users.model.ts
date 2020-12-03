@@ -1,12 +1,25 @@
 import { prop, getModelForClass } from '@typegoose/typegoose';
+import { Exclude, Expose, Transform } from 'class-transformer';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import * as types from '@typegoose/typegoose/lib/types';
 import * as mongoose from 'mongoose';
 
-class UserClass {
-    @prop()
-    _id!: mongoose.Types.ObjectId;
+// re-implement base Document to allow class-transformer to serialize/deserialize _id and __v
+class DocumentCT {
+    @Expose()
+    @Transform(
+        // deserialize ObjectId into a string
+        (value: any) => value instanceof mongoose.Types.ObjectId
+            ? value.toHexString()
+            : value,
+        { toClassOnly: true })
+    public _id?: string;
 
+    @Expose()
+    public __v?: number;
+}
+
+export class UserClass extends DocumentCT {
     @prop()
     firstName?: {
         type: String
@@ -23,10 +36,10 @@ class UserClass {
     // get id() {
     //     return this.id.toHexString();
     // }
-    get id() {
-        // return this._id._id.toHexString();
-        return this._id.toHexString();
-    }
+    // get id() {
+    //     // return this._id._id.toHexString();
+    //     return this._id?.toHexString();
+    // }
 
     public findById(this: types.DocumentType<UserClass>, cb:any) {
         return this.model('Users').find({ id: this.id }, cb);
@@ -46,7 +59,7 @@ class UserClass {
             });
     }
 
-    public static createUser(userData:any) {
+    public static createUser(userData: any) {
         const user = new UserModel(userData);
         return user.save();
     }
