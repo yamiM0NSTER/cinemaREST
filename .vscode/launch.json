@@ -12,10 +12,21 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\app.ts",
-            "preLaunchTask": "tsc: build - tsconfig.json",
+            //"preLaunchTask": "tsc: build - tsconfig.json",
+            "preLaunchTask": "npm: build_debug",
+            "sourceMaps": true,
+            "smartStep": true,
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
-            ]
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "console": "internalConsole",
+            // "env": {
+            //     "DEBUG": "*:app"
+            // },
         }
+    ],
+    "debugOptions": [
+        "RedirectOutput"
     ]
 }

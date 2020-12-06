@@ -1,37 +1,20 @@
 import { prop, getModelForClass } from '@typegoose/typegoose';
-import { Exclude, Expose, Transform } from 'class-transformer';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import * as types from '@typegoose/typegoose/lib/types';
 import * as mongoose from 'mongoose';
+import {DocumentCT} from '../../common/DocumentCT'
 
-// re-implement base Document to allow class-transformer to serialize/deserialize _id and __v
-class DocumentCT {
-    @Expose()
-    @Transform(
-        // deserialize ObjectId into a string
-        (value: any) => value instanceof mongoose.Types.ObjectId
-            ? value.toHexString()
-            : value,
-        { toClassOnly: true })
-    public _id?: string;
-
-    @Expose()
-    public __v?: number;
-}
-
-export class UserClass extends DocumentCT {
+export class User extends DocumentCT {
     @prop()
-    firstName?: {
-        type: String
-    };
+    firstName!: String;
     @prop()
-    lastName?: String;
+    lastName!: String;
     @prop()
-    email?: String;
+    email!: String;
     @prop()
-    password?: String;
+    password!: String;
     @prop()
-    permissionLevel?: Number;
+    permissionLevel!: Number;
 
     // get id() {
     //     return this.id.toHexString();
@@ -41,7 +24,7 @@ export class UserClass extends DocumentCT {
     //     return this._id?.toHexString();
     // }
 
-    public findById(this: types.DocumentType<UserClass>, cb:any) {
+    public findById(this: types.DocumentType<User>, cb:any) {
         return this.model('Users').find({ id: this.id }, cb);
     }
 
@@ -49,7 +32,7 @@ export class UserClass extends DocumentCT {
         return UserModel.find({ email: email });
     }
 
-    public static findById(id: mongoose.Types.ObjectId) {
+    public static GetById(id: mongoose.Types.ObjectId) {
         return UserModel.findById(id)
             .then((result) => {
                 let res : any = result?.toJSON();
@@ -64,9 +47,15 @@ export class UserClass extends DocumentCT {
         return user.save();
     }
 
-    public static list(perPage:any, page:any) {
+    public static list(perPage: number, page: number) {
+        let usersProjection = {
+            __v: false,
+            // _id: true,
+            password : false,
+        };
+
         return new Promise((resolve, reject) => {
-            UserModel.find()
+            UserModel.find({}, usersProjection)
                 .limit(perPage)
                 .skip(perPage * page)
                 .exec(function (err, users) {
@@ -101,6 +90,4 @@ export class UserClass extends DocumentCT {
     }
 }
 
-const UserModel = getModelForClass(UserClass);
-
-export default UserModel;
+export const UserModel = getModelForClass(User);
