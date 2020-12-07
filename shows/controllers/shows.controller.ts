@@ -1,10 +1,8 @@
 import { Show, ShowModel } from "../models/shows.model";
-import { Movie, MovieModel } from "../../movies/models/movies.model";
-import crypto from 'crypto';
+import { MovieModel } from "../../movies/models/movies.model";
 import { DocumentType } from '@typegoose/typegoose/lib/types';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import config from '../../common/env.config';
 import moment from 'moment';
 
 export function insert(req: Request, res: Response) {

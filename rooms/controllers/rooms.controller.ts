@@ -1,10 +1,8 @@
 import { Room, RoomModel } from "../models/rooms.model";
-import { Show, ShowModel } from "../../shows/models/shows.model";
-import crypto from 'crypto';
+import { ShowModel } from "../../shows/models/shows.model";
 import { DocumentType } from '@typegoose/typegoose/lib/types';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import config from '../../common/env.config';
 
 export function insert(req: Request, res: Response) {
     RoomModel.createRoom(req.body)

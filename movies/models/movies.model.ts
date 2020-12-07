@@ -1,8 +1,6 @@
 import { prop, getModelForClass } from '@typegoose/typegoose';
-import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import * as types from '@typegoose/typegoose/lib/types';
-import * as mongoose from 'mongoose';
-import {DocumentCT} from '../../common/DocumentCT'
+import { DocumentType } from '@typegoose/typegoose/lib/types';
+import { DocumentCT } from '../../common/DocumentCT'
 
 export class Movie extends DocumentCT {
     @prop()
@@ -14,7 +12,7 @@ export class Movie extends DocumentCT {
     @prop()
     Producer!: string;
 
-    public findById(this: types.DocumentType<Movie>, callback?: (err: any, res: any[]) => void) {
+    public findById(this: DocumentType<Movie>, callback?: (err: any, res: any[]) => void) {
         return this.model('Shows').find({ id: this.id }, callback);
     }
 
@@ -39,7 +37,6 @@ export class Movie extends DocumentCT {
         let Projection = {
             __v: false,
             // _id: true,
-            password : false,
         };
 
         return new Promise((resolve, reject) => {

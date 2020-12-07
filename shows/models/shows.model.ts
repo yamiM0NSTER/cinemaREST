@@ -1,8 +1,6 @@
 import { prop, getModelForClass } from '@typegoose/typegoose';
-import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { DocumentType } from '@typegoose/typegoose/lib/types';
-import * as mongoose from 'mongoose';
-import {DocumentCT} from '../../common/DocumentCT'
+import { DocumentCT } from '../../common/DocumentCT';
 
 export class Show extends DocumentCT {
     @prop()

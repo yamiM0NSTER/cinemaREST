@@ -1,9 +1,6 @@
-// const UserModel = require('../../users/models/users.model');
-// const crypto = require('crypto');
 import crypto from 'crypto';
 import { Request, Response, NextFunction } from 'express';
-import { User, UserModel } from "../../users/models/users.model";
-import { DocumentType } from '@typegoose/typegoose/lib/types';
+import { UserModel } from "../../users/models/users.model";
 import { StatusCodes } from 'http-status-codes';
 
 class VerifyUserMiddleware {
@@ -44,6 +41,8 @@ class VerifyUserMiddleware {
                             permissionLevel: user[0].permissionLevel,
                             provider: 'email',
                             name: user[0].firstName + ' ' + user[0].lastName,
+                            firstName: user[0].firstName,
+                            lastName: user[0].lastName,
                         };
                         return next();
                     } else {

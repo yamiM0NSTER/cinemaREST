@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import debug from 'debug';
+import config from '../env.config';
 const debugLog: debug.IDebugger = debug('mongoose.service');
 let count = 0;
 
@@ -16,7 +17,7 @@ const options = {
 
 export function connectWithRetry() {
     debugLog('MongoDB connection with retry')
-    mongoose.connect("mongodb://localhost:27017/kinoREST", options)
+    mongoose.connect(config.dbEndpoint, options)
         .then(() => {
             debugLog('MongoDB is connected')
         }).catch(err => {
@@ -25,10 +26,6 @@ export function connectWithRetry() {
         })
 };
 
-connectWithRetry();
+// connectWithRetry();
 
 export { mongoose };
-
-//  export const mongoose : mongoose.Mongoose = mongoose;
-
-// exports.mongoose = mongoose;

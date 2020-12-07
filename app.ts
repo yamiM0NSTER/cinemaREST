@@ -12,16 +12,13 @@ import { UsersRoutes } from './users/users.routes.config';
 import { RoomsRoutes } from './rooms/rooms.routes.config';
 import { MoviesRoutes } from './movies/movies.routes.config';
 import { ShowsRoutes } from './shows/shows.routes.config';
-// import debug from 'debug';
-// import { Debugger } from './libs/ts-debug';
 import * as dbService from './common/services/mongoose.service';
+import config from './common/env.config';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
-const port: Number = 3000;
+const port: Number = config.port;
 const routes: Array<CommonRoutesConfig> = [];
-// const debugLog: debug.IDebugger = debug('app');
-// const debug = new Debugger(console, true, '[DEBUG] ');
 
 // here we are adding middleware to parse all incoming requests as JSON 
 app.use(bodyparser.json());
@@ -68,11 +65,6 @@ app.get('/', (req: express.Request, res: express.Response) => {
 
 // start database service
 dbService.connectWithRetry();
-
-// if (debugLog.enabled) {
-//     // do stuff...
-//     debugLog(`Server running at http://localhost:${port}`);
-// }
 
 server.listen(port, () => {
     // debug.log(`Server running at http://localhost:${port}`);

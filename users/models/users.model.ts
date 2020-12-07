@@ -1,8 +1,6 @@
 import { prop, getModelForClass } from '@typegoose/typegoose';
-import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import * as types from '@typegoose/typegoose/lib/types';
-import * as mongoose from 'mongoose';
-import {DocumentCT} from '../../common/DocumentCT'
+import { DocumentType } from '@typegoose/typegoose/lib/types';
+import { DocumentCT } from '../../common/DocumentCT'
 
 export class User extends DocumentCT {
     @prop()
@@ -16,15 +14,7 @@ export class User extends DocumentCT {
     @prop()
     permissionLevel!: number;
 
-    // get id() {
-    //     return this.id.toHexString();
-    // }
-    // get id() {
-    //     // return this._id._id.toHexString();
-    //     return this._id?.toHexString();
-    // }
-
-    public findById(this: types.DocumentType<User>, cb:any) {
+    public findById(this: DocumentType<User>, cb:any) {
         return this.model('Users').find({ id: this.id }, cb);
     }
 
@@ -33,7 +23,7 @@ export class User extends DocumentCT {
     }
 
     public static GetById(id: any/*mongoose.Types.ObjectId*/) {
-        // todo use projection?
+        // TODO: use projection?
         return UserModel.findById(id)
             .then((result) => {
                 let res : any = result?.toJSON();

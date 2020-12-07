@@ -1,4 +1,4 @@
-import { Exclude, Expose, Transform } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import * as mongoose from 'mongoose';
 
 // re-implement base Document to allow class-transformer to serialize/deserialize _id and __v

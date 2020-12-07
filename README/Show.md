@@ -12,12 +12,17 @@ Show show `GET`
 
 Show list of shows `GET`
 
+Show list of shows for a room `GET`
+
 ## Endpoint
 Create/Update/Delete/Show movie http://localhost:3000/shows/[ID]
 
-ID - show ID
-
 Show list of movies http://localhost:3000/shows/
+
+Show list of shows for a room http://localhost:3000/roomshows/[roomID]
+
+ID - show ID
+roomID - room ID
 
 ## Parameters
 
