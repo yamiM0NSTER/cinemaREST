@@ -1,15 +1,48 @@
 import { Show, ShowModel } from "../models/shows.model";
+import { Movie, MovieModel } from "../../movies/models/movies.model";
 import crypto from 'crypto';
 import { DocumentType } from '@typegoose/typegoose/lib/types';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import config from '../../common/env.config';
+import moment from 'moment';
 
 export function insert(req: Request, res: Response) {
-    ShowModel.createShow(req.body)
-        .then((result) => {
-            res.status(StatusCodes.CREATED).send({ id: (<DocumentType<Show>>result)._id });
-        });
+    MovieModel.findById(req.body.movieId).then((movie) => {
+        let insertStart = new Date(req.body.startDate);
+        let insertEnd = moment(insertStart).add(movie?.Length, 'm').toDate();
+        let startsDuring = { $and: [{ startDate: { $lt: insertStart } }, { endDate: { $gt: insertStart } }] };
+        let endsDuring = { $and: [{ startDate: { $lt: insertEnd } }, { endDate: { $gt: insertEnd } }] };
+        let query = { $and: [{ roomId: req.body.roomId }, {$or: [startsDuring, endsDuring]}]};
+
+        ShowModel.find(query).then((shows) => {
+            if(shows.length > 0) {
+                res.status(StatusCodes.BAD_REQUEST).send({ error: 'Cannot run multiple shows at same time in a room.' });
+            }
+            else {
+                ShowModel.createShow(req.body)
+                    .then((result) => {
+                        res.status(StatusCodes.CREATED).send({ id: (<DocumentType<Show>>result)._id });
+                    });
+            }
+        })
+    })
+
+    // let insertStart = new Date(req.body.startDate);
+    // let insertEnd = moment(insertStart).add()
+    // let startsDuring = { $and: [{ startDate: { $lt: insertStart } }, { endDate: { $gt: insertStart}}]};
+    
+
+    // let query = { $and: [{ roomId: req.body.roomId, $or: [{ startDate: { $gte: new Date() } }, { endDate: { $gte: new Date() } }] }] };
+
+    // //req.body.startDate
+    // //req.body.roomId
+    // ShowModel.find()
+
+    // ShowModel.createShow(req.body)
+    //     .then((result) => {
+    //         res.status(StatusCodes.CREATED).send({ id: (<DocumentType<Show>>result)._id });
+    //     });
 }
 
 export function list(req: Request, res: Response) {

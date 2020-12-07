@@ -9,15 +9,7 @@ export class Movie extends DocumentCT {
     Title!: string;
 
     @prop()
-    firstName!: String;
-    @prop()
-    lastName!: String;
-    @prop()
-    email!: String;
-    @prop()
-    password!: String;
-    @prop()
-    permissionLevel!: Number;
+    Length!: number;
 
 
     public findById(this: types.DocumentType<Movie>, callback?: (err: any, res: any[]) => void) {

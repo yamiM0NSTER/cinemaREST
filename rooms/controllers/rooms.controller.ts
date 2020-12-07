@@ -48,21 +48,15 @@ export function removeById(req: Request, res: Response) {
     let query = { $and: [{ roomId: req.params.roomId, $or: [{ startDate: { $gte: new Date() } }, { endDate: { $gte: new Date() } }] }] };
 
     ShowModel.find(query)
-        .exec(function (err, shows) {
-            if (err) {
-                res.status(StatusCodes.BAD_REQUEST).send({ error: err });
+        .then((shows) => {
+            if (shows.length > 0) {
+                res.status(StatusCodes.BAD_REQUEST).send({ error: 'Cannot delete room with scheduled or ongoing shows' });
             }
             else {
-                if (shows.length > 0) {
-                    res.status(StatusCodes.BAD_REQUEST).send({ error: 'Cannot delete room with scheduled or ongoing shows' });
-                }
-                else
-                {
-                    RoomModel.removeById(req.params.roomId)
-                        .then((result) => {
-                            res.status(StatusCodes.NO_CONTENT).send({});
-                        });
-                }
+                RoomModel.removeById(req.params.roomId)
+                    .then((result) => {
+                        res.status(StatusCodes.NO_CONTENT).send({});
+                    });
             }
         })
 };

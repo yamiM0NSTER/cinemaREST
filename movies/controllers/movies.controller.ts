@@ -6,10 +6,6 @@ import { StatusCodes } from 'http-status-codes';
 import config from '../../common/env.config';
 
 export function insert(req: Request, res: Response) {
-    let salt = crypto.randomBytes(16).toString('base64');
-    let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");
-    req.body.password = salt + "$" + hash;
-    req.body.permissionLevel = config.permissionLevels.NORMAL_USER;
     MovieModel.createMovie(req.body)
         .then((result) => {
             res.status(StatusCodes.CREATED).send({ id: (<DocumentType<Movie>>result)._id });
