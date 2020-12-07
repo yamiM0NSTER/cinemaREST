@@ -10,7 +10,7 @@ import moment from 'moment';
 export function insert(req: Request, res: Response) {
     MovieModel.findById(req.body.movieId).then((movie) => {
         let insertStart = new Date(req.body.startDate);
-        let insertEnd = moment(insertStart).add(movie?.Length, 'm').toDate();
+        let insertEnd = req.body.endDate = moment(insertStart).add(movie?.Length, 'm').toDate();
         let startsDuring = { $and: [{ startDate: { $lt: insertStart } }, { endDate: { $gt: insertStart } }] };
         let endsDuring = { $and: [{ startDate: { $lt: insertEnd } }, { endDate: { $gt: insertEnd } }] };
         let query = { $and: [{ roomId: req.body.roomId }, {$or: [startsDuring, endsDuring]}]};
@@ -57,7 +57,7 @@ export function patchById(req: Request, res: Response) {
         .then((show) => {
             MovieModel.findById(show!.movieId).then((movie) => {
                 let insertStart = req.body.startDate ? new Date(req.body.startDate) : show?.startDate;
-                let insertEnd = moment(insertStart).add(movie?.Length, 'm').toDate();
+                let insertEnd = req.body.endDate = moment(insertStart).add(movie?.Length, 'm').toDate();
                 let startsDuring = { $and: [{ startDate: { $lt: insertStart } }, { endDate: { $gt: insertStart } }] };
                 let endsDuring = { $and: [{ startDate: { $lt: insertEnd } }, { endDate: { $gt: insertEnd } }] };
                 let room = req.body.roomId ? req.body.roomId : show?.roomId;
