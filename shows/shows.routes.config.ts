@@ -47,6 +47,12 @@ export class ShowsRoutes extends CommonRoutesConfig {
                 ShowsController.removeById
             ]);
     
+        this.app.route(`/roomshows/:roomId`)
+            .get([
+                checkJwt,
+                checkRole([config.permissionLevels.NORMAL_USER, config.permissionLevels.ADMIN]),
+                ShowsController.getShowsByRoomId
+            ]);
         return this.app;
     }
 }

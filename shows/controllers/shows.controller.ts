@@ -69,6 +69,7 @@ export function getById(req: Request, res: Response) {
 };
 
 export function patchById(req: Request, res: Response) {
+    // TODO: Check times, especially when moving between rooms
     ShowModel.patchShow(req.params.showId, req.body)
         .then((result) => {
             res.status(StatusCodes.NO_CONTENT).send({});
@@ -79,5 +80,12 @@ export function removeById(req: Request, res: Response) {
     ShowModel.removeById(req.params.showId)
         .then((result) => {
             res.status(StatusCodes.NO_CONTENT).send({});
+        });
+};
+
+export function getShowsByRoomId(req: Request, res: Response) {
+    ShowModel.getShowsByRoomId(req.params.roomId)
+        .then((result) => {
+            res.status(StatusCodes.OK).send(result);
         });
 };

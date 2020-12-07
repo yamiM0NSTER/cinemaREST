@@ -57,6 +57,25 @@ export class Show extends DocumentCT {
         });
     }
 
+    public static getShowsByRoomId(roomId: any) {
+        let Projection = {
+            __v: false,
+            // _id: true,
+        };
+
+        return new Promise((resolve, reject) => {
+            ShowModel.find({roomId: roomId}, Projection)
+                .exec(function (err, shows) {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        resolve(shows);
+                    }
+                })
+        });
+    }
+
     public static patchShow(id: any, showData: any) {
         return ShowModel.findOneAndUpdate({
             _id: id
