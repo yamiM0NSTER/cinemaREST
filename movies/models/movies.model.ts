@@ -11,6 +11,8 @@ export class Movie extends DocumentCT {
     @prop()
     Length!: number;
 
+    @prop()
+    Producer!: string;
 
     public findById(this: types.DocumentType<Movie>, callback?: (err: any, res: any[]) => void) {
         return this.model('Shows').find({ id: this.id }, callback);

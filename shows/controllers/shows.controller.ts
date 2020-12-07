@@ -27,22 +27,6 @@ export function insert(req: Request, res: Response) {
             }
         })
     })
-
-    // let insertStart = new Date(req.body.startDate);
-    // let insertEnd = moment(insertStart).add()
-    // let startsDuring = { $and: [{ startDate: { $lt: insertStart } }, { endDate: { $gt: insertStart}}]};
-    
-
-    // let query = { $and: [{ roomId: req.body.roomId, $or: [{ startDate: { $gte: new Date() } }, { endDate: { $gte: new Date() } }] }] };
-
-    // //req.body.startDate
-    // //req.body.roomId
-    // ShowModel.find()
-
-    // ShowModel.createShow(req.body)
-    //     .then((result) => {
-    //         res.status(StatusCodes.CREATED).send({ id: (<DocumentType<Show>>result)._id });
-    //     });
 }
 
 export function list(req: Request, res: Response) {
@@ -69,11 +53,29 @@ export function getById(req: Request, res: Response) {
 };
 
 export function patchById(req: Request, res: Response) {
-    // TODO: Check times, especially when moving between rooms
-    ShowModel.patchShow(req.params.showId, req.body)
-        .then((result) => {
-            res.status(StatusCodes.NO_CONTENT).send({});
-        });
+    ShowModel.findOne({ _id: req.params.showId})
+        .then((show) => {
+            MovieModel.findById(show!.movieId).then((movie) => {
+                let insertStart = req.body.startDate ? new Date(req.body.startDate) : show?.startDate;
+                let insertEnd = moment(insertStart).add(movie?.Length, 'm').toDate();
+                let startsDuring = { $and: [{ startDate: { $lt: insertStart } }, { endDate: { $gt: insertStart } }] };
+                let endsDuring = { $and: [{ startDate: { $lt: insertEnd } }, { endDate: { $gt: insertEnd } }] };
+                let room = req.body.roomId ? req.body.roomId : show?.roomId;
+                let query = { $and: [{ roomId: room }, { $or: [startsDuring, endsDuring] }] };
+
+                ShowModel.find(query).then((shows) => {
+                    if (shows.length > 0) {
+                        res.status(StatusCodes.BAD_REQUEST).send({ error: 'Cannot run multiple shows at same time in a room.' });
+                    }
+                    else {
+                        ShowModel.patchShow(req.params.showId, req.body)
+                            .then((result) => {
+                                res.status(StatusCodes.NO_CONTENT).send({});
+                            });
+                    }
+                })
+            })
+        })    
 };
 
 export function removeById(req: Request, res: Response) {
