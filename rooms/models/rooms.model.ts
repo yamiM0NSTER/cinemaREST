@@ -1,40 +1,23 @@
 import { prop, getModelForClass } from '@typegoose/typegoose';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import * as types from '@typegoose/typegoose/lib/types';
+import { DocumentType } from '@typegoose/typegoose/lib/types';
 import * as mongoose from 'mongoose';
 import {DocumentCT} from '../../common/DocumentCT'
 
-export class User extends DocumentCT {
+export class Room extends DocumentCT {
     @prop()
-    firstName!: string;
-    @prop()
-    lastName!: string;
-    @prop()
-    email!: string;
-    @prop()
-    password!: string;
-    @prop()
-    permissionLevel!: number;
+    Name!: string;
 
-    // get id() {
-    //     return this.id.toHexString();
-    // }
-    // get id() {
-    //     // return this._id._id.toHexString();
-    //     return this._id?.toHexString();
-    // }
+    @prop()
+    seats!: number;
 
-    public findById(this: types.DocumentType<User>, cb:any) {
-        return this.model('Users').find({ id: this.id }, cb);
-    }
-
-    public static findByEmail(email : string) {
-        return UserModel.find({ email: email });
+    public findById(this: DocumentType<Room>, callback?: (err: any, res: any[]) => void) {
+        return this.model('Rooms').find({ id: this.id }, callback);
     }
 
     public static GetById(id: any/*mongoose.Types.ObjectId*/) {
         // todo use projection?
-        return UserModel.findById(id)
+        return RoomModel.findById(id)
             .then((result) => {
                 let res : any = result?.toJSON();
                 delete res?._id;
@@ -44,43 +27,43 @@ export class User extends DocumentCT {
             });
     }
 
-    public static createUser(userData: any) {
-        const user = new UserModel(userData);
-        return user.save();
+    public static createRoom(roomData: any) {
+        const room = new RoomModel(roomData);
+        return room.save();
     }
 
     public static list(perPage: number, page: number) {
-        let usersProjection = {
+        let Projection = {
             __v: false,
             // _id: true,
             password : false,
         };
 
         return new Promise((resolve, reject) => {
-            UserModel.find({}, usersProjection)
+            RoomModel.find({}, Projection)
                 .limit(perPage)
                 .skip(perPage * page)
-                .exec(function (err, users) {
+                .exec(function (err, rooms) {
                     if (err) {
                         reject(err);
                     }
                     else {
-                        resolve(users);
+                        resolve(rooms);
                     }
                 })
         });
     }
 
-    public static patchUser(id: any, userData: any)
+    public static patchRoom(id: any, roomData: any)
     {
-        return UserModel.findOneAndUpdate({
+        return RoomModel.findOneAndUpdate({
             _id: id
-        }, userData);
+        }, roomData);
     }
 
-    public static removeById(userId: any) {
+    public static removeById(roomId: any) {
         return new Promise((resolve, reject) => {
-            UserModel.deleteMany({ _id: userId }, (err) => {
+            RoomModel.deleteMany({ _id: roomId }, (err) => {
                 if (err) {
                     reject(err);
                 }
@@ -92,4 +75,4 @@ export class User extends DocumentCT {
     }
 }
 
-export const UserModel = getModelForClass(User);
+export const RoomModel = getModelForClass(Room);

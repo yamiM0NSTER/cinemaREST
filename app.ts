@@ -6,8 +6,12 @@ import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
 import cors from 'cors';
 import {CommonRoutesConfig} from './common/routes.config';
-import {UsersRoutes} from './users/users.routes.config';
-import {AuthRoutes} from './auth/auth.routes.config';
+
+import { AuthRoutes } from './auth/auth.routes.config';
+import { UsersRoutes } from './users/users.routes.config';
+import { RoomsRoutes } from './rooms/rooms.routes.config';
+import { MoviesRoutes } from './movies/movies.routes.config';
+import { ShowsRoutes } from './shows/shows.routes.config';
 // import debug from 'debug';
 // import { Debugger } from './libs/ts-debug';
 import * as dbService from './common/services/mongoose.service';
@@ -39,8 +43,11 @@ app.use(expressWinston.logger({
 
 // here we are adding the UserRoutes to our array,
 // after sending the Express.js application object to have the routes added to our app!
-routes.push(new UsersRoutes(app));
 routes.push(new AuthRoutes(app));
+routes.push(new UsersRoutes(app));
+routes.push(new RoomsRoutes(app));
+routes.push(new MoviesRoutes(app));
+routes.push(new ShowsRoutes(app));
 
 // here we are configuring the expressWinston error-logging middleware,
 // which doesn't *handle* errors per se, but does *log* them

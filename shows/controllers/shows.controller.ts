@@ -1,18 +1,14 @@
-import { User, UserModel } from "../models/users.model";
+import { Show, ShowModel } from "../models/shows.model";
 import crypto from 'crypto';
-import * as types from '@typegoose/typegoose/lib/types';
+import { DocumentType } from '@typegoose/typegoose/lib/types';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import config from '../../common/env.config';
 
 export function insert(req: Request, res: Response) {
-    let salt = crypto.randomBytes(16).toString('base64');
-    let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");
-    req.body.password = salt + "$" + hash;
-    req.body.permissionLevel = config.permissionLevels.NORMAL_USER;
-    UserModel.createUser(req.body)
+    ShowModel.createShow(req.body)
         .then((result) => {
-            res.status(StatusCodes.CREATED).send({ id: (<types.DocumentType<User>>result)._id });
+            res.status(StatusCodes.CREATED).send({ id: (<DocumentType<Show>>result)._id });
         });
 }
 
@@ -26,34 +22,28 @@ export function list(req: Request, res: Response) {
             page = Number.isInteger(req.query.page) ? (req.query as any).page : 0;
         }
     }
-    UserModel.list(limit, page)
+    ShowModel.list(limit, page)
         .then((result) => {
             res.status(StatusCodes.OK).send(result);
         })
 };
 
 export function getById(req: Request, res: Response) {
-    UserModel.GetById(req.params.userId)
+    ShowModel.GetById(req.params.showId)
         .then((result) => {
             res.status(StatusCodes.OK).send(result);
         });
 };
 
 export function patchById(req: Request, res: Response) {
-    if (req.body.password) {
-        let salt = crypto.randomBytes(16).toString('base64');
-        let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");
-        req.body.password = salt + "$" + hash;
-    }
-
-    UserModel.patchUser(req.params.userId, req.body)
+    ShowModel.patchShow(req.params.showId, req.body)
         .then((result) => {
             res.status(StatusCodes.NO_CONTENT).send({});
         });
 };
 
 export function removeById(req: Request, res: Response) {
-    UserModel.removeById(req.params.userId)
+    ShowModel.removeById(req.params.showId)
         .then((result) => {
             res.status(StatusCodes.NO_CONTENT).send({});
         });

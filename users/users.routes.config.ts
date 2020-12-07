@@ -40,18 +40,35 @@ export class UsersRoutes extends CommonRoutesConfig {
                 // it simply passes control to the next applicable function below using next()
                 next();
             })
-            .get((req: express.Request, res: express.Response) => {
-                res.status(200).send(`GET requested for id ${req.params.userId}`);
-            })
-            .put((req: express.Request, res: express.Response) => {
-                res.status(200).send(`PUT requested for id ${req.params.userId}`);
-            })
-            .patch((req: express.Request, res: express.Response) => {
-                res.status(200).send(`PATCH requested for id ${req.params.userId}`);
-            })
-            .delete((req: express.Request, res: express.Response) => {
-                res.status(200).send(`DELETE requested for id ${req.params.userId}`);
-            });
+            // .get((req: express.Request, res: express.Response) => {
+            //     res.status(200).send(`GET requested for id ${req.params.userId}`);
+            // })
+            // .put((req: express.Request, res: express.Response) => {
+            //     res.status(200).send(`PUT requested for id ${req.params.userId}`);
+            // })
+            // .patch((req: express.Request, res: express.Response) => {
+            //     res.status(200).send(`PATCH requested for id ${req.params.userId}`);
+            // })
+            // .delete((req: express.Request, res: express.Response) => {
+            //     res.status(200).send(`DELETE requested for id ${req.params.userId}`);
+            // });
+            .get([
+                checkJwt,
+                checkRole([config.permissionLevels.ADMIN]),
+                // PermissionMiddleware.onlySameUserOrAdminCanDoThisAction,
+                UsersController.getById
+            ])
+            .patch([
+                checkJwt,
+                checkRole([config.permissionLevels.ADMIN]),
+                // PermissionMiddleware.onlySameUserOrAdminCanDoThisAction,
+                UsersController.patchById
+            ])
+            .delete( [
+                checkJwt,
+                checkRole([config.permissionLevels.ADMIN]),
+                UsersController.removeById
+            ]);
     
         return this.app;
     }

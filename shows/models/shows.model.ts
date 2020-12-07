@@ -1,86 +1,71 @@
 import { prop, getModelForClass } from '@typegoose/typegoose';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import * as types from '@typegoose/typegoose/lib/types';
+import { DocumentType } from '@typegoose/typegoose/lib/types';
 import * as mongoose from 'mongoose';
 import {DocumentCT} from '../../common/DocumentCT'
 
-export class User extends DocumentCT {
+export class Show extends DocumentCT {
     @prop()
-    firstName!: string;
+    startDate!: Date;
     @prop()
-    lastName!: string;
-    @prop()
-    email!: string;
-    @prop()
-    password!: string;
-    @prop()
-    permissionLevel!: number;
+    endDate!: Date;
 
-    // get id() {
-    //     return this.id.toHexString();
-    // }
-    // get id() {
-    //     // return this._id._id.toHexString();
-    //     return this._id?.toHexString();
-    // }
+    @prop()
+    roomId!: string;
+    @prop()
+    movieId!: string;
 
-    public findById(this: types.DocumentType<User>, cb:any) {
-        return this.model('Users').find({ id: this.id }, cb);
-    }
-
-    public static findByEmail(email : string) {
-        return UserModel.find({ email: email });
+    public findById(this: DocumentType<Show>, callback?: (err: any, res: any[]) => void) {
+        return this.model('Shows').find({ id: this.id }, callback);
     }
 
     public static GetById(id: any/*mongoose.Types.ObjectId*/) {
         // todo use projection?
-        return UserModel.findById(id)
+        return ShowModel.findById(id)
             .then((result) => {
                 let res : any = result?.toJSON();
                 delete res?._id;
                 delete res?.__v;
-                delete res?.password;
                 return res;
             });
     }
 
-    public static createUser(userData: any) {
-        const user = new UserModel(userData);
-        return user.save();
+    public static createShow(showData: any) {
+        const show = new ShowModel(showData);
+        return show.save();
     }
 
     public static list(perPage: number, page: number) {
-        let usersProjection = {
+        let Projection = {
             __v: false,
             // _id: true,
             password : false,
         };
 
         return new Promise((resolve, reject) => {
-            UserModel.find({}, usersProjection)
+            ShowModel.find({}, Projection)
                 .limit(perPage)
                 .skip(perPage * page)
-                .exec(function (err, users) {
+                .exec(function (err, shows) {
                     if (err) {
                         reject(err);
                     }
                     else {
-                        resolve(users);
+                        resolve(shows);
                     }
                 })
         });
     }
 
-    public static patchUser(id: any, userData: any)
-    {
-        return UserModel.findOneAndUpdate({
+    public static patchShow(id: any, showData: any) {
+        return ShowModel.findOneAndUpdate({
             _id: id
-        }, userData);
+        }, showData);
     }
 
-    public static removeById(userId: any) {
+    public static removeById(showId: any) {
         return new Promise((resolve, reject) => {
-            UserModel.deleteMany({ _id: userId }, (err) => {
+            ShowModel.deleteMany({ _id: showId }, (err) => {
                 if (err) {
                     reject(err);
                 }
@@ -92,4 +77,4 @@ export class User extends DocumentCT {
     }
 }
 
-export const UserModel = getModelForClass(User);
+export const ShowModel = getModelForClass(Show);
