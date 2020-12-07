@@ -25,6 +25,9 @@ export class UsersRoutes extends CommonRoutesConfig {
                 UsersController.list
             ])
             .post([
+                // After admin account is created, these checks should be active
+                // checkJwt,
+                // checkRole([config.permissionLevels.ADMIN]),
                 UsersController.insert
             ]);
     
